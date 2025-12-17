@@ -16,10 +16,8 @@ st.set_page_config(
 # --------------------------------------------------
 @st.cache_data
 def load_data():
-    df = pd.read_csv(
-    "data/Companies_CGPA.csv",
-    encoding="latin1"   # or "ISO-8859-1"
-)
+    df = load_data()
+
 
 df = load_data()
 
