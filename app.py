@@ -1,4 +1,4 @@
-import streamlit as st
+ import streamlit as st
 import pandas as pd
 
 # ---------------- PAGE CONFIG ----------------
@@ -30,7 +30,3 @@ with st.spinner("Loading company data..."):
     df = load_data()
 
 st.success("Company data loaded successfully!")
-
-# ---------------- DEBUG CHECK (TEMPORARY) ----------------
-st.write("Rows loaded:", len(df))
-st.dataframe(df.head())
