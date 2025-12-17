@@ -1,4 +1,2 @@
-streamlit
-pandas
-pdfplumber
-python-docx
+streamlit>=1.30
+pandas>=2.0
