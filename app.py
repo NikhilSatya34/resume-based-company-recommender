@@ -6,7 +6,7 @@ from docx import Document
 # ---------------- PAGE CONFIG ----------------
 st.set_page_config(page_title="Career Readiness", layout="wide")
 
-# ---------------- THEME / CSS ----------------
+# ---------------- CSS ----------------
 st.markdown("""
 <style>
 .card {
@@ -54,45 +54,35 @@ def load_data():
     return pd.read_csv("data/Companies_CGPA.csv", encoding="utf-8")
 
 df = load_data()
-st.success("Company data loaded successfully!")
 
-# ---------------- LOGO HELPER ----------------
+# ---------------- LOGO ----------------
 def get_logo(company):
     name = company.lower().replace(" ", "")
     known = {
-        "tcs": "tcs.com",
-        "infosys": "infosys.com",
-        "wipro": "wipro.com",
-        "accenture": "accenture.com",
-        "cognizant": "cognizant.com",
-        "capgemini": "capgemini.com",
-        "ibm": "ibm.com",
-        "amazon": "amazon.com",
-        "microsoft": "microsoft.com",
-        "google": "google.com",
-        "deloitte": "deloitte.com"
+        "tcs": "tcs.com", "infosys": "infosys.com", "wipro": "wipro.com",
+        "accenture": "accenture.com", "cognizant": "cognizant.com",
+        "capgemini": "capgemini.com", "ibm": "ibm.com",
+        "amazon": "amazon.com", "microsoft": "microsoft.com",
+        "google": "google.com", "deloitte": "deloitte.com"
     }
     for k, v in known.items():
         if k in name:
             return f"https://logo.clearbit.com/{v}"
     return f"https://logo.clearbit.com/{name}.com"
 
-# ---------------- RESUME FUNCTIONS ----------------
-SKILLS = [
-    "python","java","sql","machine learning","data science",
-    "excel","power bi","tableau","deep learning","statistics"
-]
+# ---------------- RESUME ----------------
+SKILLS = ["python","java","sql","machine learning","data science","excel","power bi","tableau"]
 
 def extract_resume_text(file):
     text = ""
     if file.type == "application/pdf":
         with pdfplumber.open(file) as pdf:
-            for page in pdf.pages:
-                text += page.extract_text() or ""
+            for p in pdf.pages:
+                text += p.extract_text() or ""
     else:
         doc = Document(file)
-        for p in doc.paragraphs:
-            text += p.text + " "
+        for para in doc.paragraphs:
+            text += para.text + " "
     return text.lower()
 
 def extract_skills(text):
@@ -101,7 +91,7 @@ def extract_skills(text):
 # ---------------- FILTER UI ----------------
 st.subheader("🔍 Find Suitable Companies")
 
-c1, c2, c3 = st.columns(3)
+c1, c2, c3, c4 = st.columns(4)
 
 with c1:
     stream = st.selectbox("Stream", sorted(df["stream"].unique()))
@@ -121,24 +111,22 @@ with c3:
         ]["job_role"].unique())
     )
 
-# ---------------- RESUME UPLOAD (OPTIONAL) ----------------
-st.markdown("### 📄 Optional: Upload Your Resume")
+with c4:
+    cgpa = st.slider("Your CGPA", 5.0, 10.0, 7.0, 0.1)
 
-uploaded_resume = st.file_uploader(
-    "Upload PDF or DOCX resume",
-    type=["pdf","docx"]
-)
+# ---------------- RESUME UPLOAD ----------------
+st.markdown("### 📄 Optional: Upload Your Resume")
+uploaded_resume = st.file_uploader("Upload PDF or DOCX", type=["pdf","docx"])
 
 if uploaded_resume:
     text = extract_resume_text(uploaded_resume)
     skills = extract_skills(text)
-    st.success("Resume uploaded successfully!")
-    st.write("**Skills detected:**", skills if skills else "No matching skills found")
+    st.write("**Skills detected:**", skills if skills else "No matching skills")
 
-# ---------------- SUBMIT BUTTON ----------------
+# ---------------- SUBMIT ----------------
 submit = st.button("🔍 Find Companies")
 
-# ---------------- CARD FUNCTION ----------------
+# ---------------- CARD ----------------
 def show_card(row, tag):
     colors = {
         "High": "#22c55e",
@@ -146,18 +134,16 @@ def show_card(row, tag):
         "Low": "#3b82f6",
         "Startup": "#a855f7"
     }
-    color = colors.get(row["company_level"], "#64748b")
 
     st.markdown(f"""
     <div class="card">
         <div class="flex">
-            <img src="{get_logo(row['company_name'])}"
-                 class="logo"
+            <img src="{get_logo(row['company_name'])}" class="logo"
                  onerror="this.style.display='none'"/>
             <div>
                 <h4 style="margin:0;">{row['company_name']}</h4>
                 <div style="margin-top:6px;">
-                    <span class="badge" style="background:{color};">
+                    <span class="badge" style="background:{colors[row['company_level']]};">
                         {row['company_level']}
                     </span>
                     <span class="badge" style="background:#334155;">
@@ -170,34 +156,36 @@ def show_card(row, tag):
     </div>
     """, unsafe_allow_html=True)
 
-# ---------------- RESULTS (ONLY AFTER SUBMIT) ----------------
+# ---------------- CGPA FILTER LOGIC ----------------
+def allowed_levels(cgpa):
+    if cgpa >= 8.0:
+        return ["High","Mid","Low","Startup"]
+    elif cgpa >= 6.5:
+        return ["Mid","Low","Startup"]
+    else:
+        return ["Low","Startup"]
+
+# ---------------- RESULTS ----------------
 if submit:
-    base_df = df[
+    base = df[
         (df["stream"] == stream) &
         (df["department"] == department)
     ]
 
-    order = ["High", "Mid", "Low", "Startup"]
-    base_df["company_level"] = pd.Categorical(
-        base_df["company_level"],
-        categories=order,
-        ordered=True
-    )
+    levels = allowed_levels(cgpa)
 
-    # Best Matches: SAME ROLE, ALL LEVELS
-    best_df = base_df[
-        base_df["job_role"] == role
-    ].sort_values("company_level")
+    base = base[base["company_level"].isin(levels)]
 
-    # Alternate: OTHER ROLES, ALL LEVELS
-    alt_df = base_df[
-        base_df["job_role"] != role
-    ].sort_values("company_level")
+    order = ["High","Mid","Low","Startup"]
+    base["company_level"] = pd.Categorical(base["company_level"], order, ordered=True)
+
+    best_df = base[base["job_role"] == role].sort_values("company_level")
+    alt_df  = base[base["job_role"] != role].sort_values("company_level")
 
     st.markdown("## 🏢 Recommended Companies")
 
     if not best_df.empty:
-        st.subheader("🎯 Best Matches (High → Startup)")
+        st.subheader("🎯 Best Matches")
         cols = st.columns(2)
         for i, (_, r) in enumerate(best_df.drop_duplicates().iterrows()):
             with cols[i % 2]:
@@ -211,7 +199,7 @@ if submit:
                 show_card(r, "Alternate Role")
 
     if best_df.empty and alt_df.empty:
-        st.info("No companies found for this selection.")
+        st.info("No companies found for this CGPA and role.")
 
 # ---------------- FOOTER ----------------
 st.markdown("---")
