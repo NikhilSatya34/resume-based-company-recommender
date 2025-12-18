@@ -13,6 +13,7 @@ st.markdown("""
 
 /* Base card */
 .card {
+    color: #e5e7eb;
     border-radius: 18px;
     padding: 18px;
     margin-bottom: 20px;
@@ -166,7 +167,7 @@ def show_card(row, tag):
     </div>
     """
 
-    components.html(html, height=270)
+    components.html(html, height=360)
 
 # ---------------- RESULTS ----------------
 if submit:
