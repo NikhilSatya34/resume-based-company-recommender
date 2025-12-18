@@ -112,29 +112,29 @@ def show_card(row, tag):
     skills = str(row.get("required_skills", "")).split(",")
 
     html = f"""
-    <div class="card">
-        <h4 style="margin:0; font-size:18px;">🏢 {row['company_name']}</h4>
+<div class="card">
+  <h4 style="margin:0; font-size:18px;">🏢 {row['company_name']}</h4>
 
-        <div style="margin-top:10px;">
-            <span class="badge" style="background:{colors.get(row['company_level'], '#64748b')};">
-                {row['company_level']}
-            </span>
-            <span class="badge" style="background:#334155;">
-                {tag}
-            </span>
-        </div>
+  <div style="margin-top:10px;">
+    <span class="badge" style="background:{colors.get(row['company_level'], '#64748b')};">
+      {row['company_level']}
+    </span>
+    <span class="badge" style="background:#334155;">
+      {tag}
+    </span>
+  </div>
 
-        <p style="margin-top:10px; color:#cbd5f5;">📍 {row['location']}</p>
+  <p style="margin-top:10px; color:#cbd5f5;">📍 {row['location']}</p>
 
-        <p style="margin-top:12px; font-weight:700; color:#f9a8d4;">
-            🎯 Required Skills
-        </p>
+  <p style="margin-top:12px; font-weight:700; color:#f9a8d4;">
+    🎯 Required Skills
+  </p>
 
-        <div>
-            {''.join(f"<span class='skill'>{s.strip()}</span>" for s in skills if s.strip())}
-        </div>
-    </div>
-    """
+  <div>
+    {''.join(f"<span class='skill'>{s.strip()}</span>" for s in skills if s.strip())}
+  </div>
+</div>
+"""
 
     st.markdown(html, unsafe_allow_html=True)
 
