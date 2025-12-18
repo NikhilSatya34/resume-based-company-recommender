@@ -29,24 +29,21 @@ st.markdown("""
     color: white;
     margin-right: 6px;
 }
-.logo {
-    width: 52px;
-    height: 52px;
-    background: white;
-    padding: 6px;
-    border-radius: 12px;
-}
-.flex {
-    display: flex;
-    gap: 14px;
-    align-items: center;
+.skill {
+    display: inline-block;
+    padding: 4px 10px;
+    margin: 4px 6px 0 0;
+    font-size: 12px;
+    border-radius: 14px;
+    background: #1e293b;
+    color: #e5e7eb;
 }
 </style>
 """, unsafe_allow_html=True)
 
 # ---------------- TITLE ----------------
 st.title("🎓 Career Readiness & Company Recommender")
-st.caption("Smart recommendations with professional UI")
+st.caption("Smart recommendations based on CGPA, role & required skills")
 
 # ---------------- LOAD DATA ----------------
 @st.cache_data
@@ -55,30 +52,18 @@ def load_data():
 
 df = load_data()
 
-# ---------------- LOGO ----------------
-def get_logo(company):
-    name = company.lower().replace(" ", "")
-    known = {
-        "tcs": "tcs.com", "infosys": "infosys.com", "wipro": "wipro.com",
-        "accenture": "accenture.com", "cognizant": "cognizant.com",
-        "capgemini": "capgemini.com", "ibm": "ibm.com",
-        "amazon": "amazon.com", "microsoft": "microsoft.com",
-        "google": "google.com", "deloitte": "deloitte.com"
-    }
-    for k, v in known.items():
-        if k in name:
-            return f"https://logo.clearbit.com/{v}"
-    return f"https://logo.clearbit.com/{name}.com"
-
-# ---------------- RESUME ----------------
-SKILLS = ["python","java","sql","machine learning","data science","excel","power bi","tableau"]
+# ---------------- RESUME FUNCTIONS ----------------
+SKILLS = [
+    "python","java","sql","machine learning","data science",
+    "excel","power bi","tableau","deep learning","statistics"
+]
 
 def extract_resume_text(file):
     text = ""
     if file.type == "application/pdf":
         with pdfplumber.open(file) as pdf:
-            for p in pdf.pages:
-                text += p.extract_text() or ""
+            for page in pdf.pages:
+                text += page.extract_text() or ""
     else:
         doc = Document(file)
         for para in doc.paragraphs:
@@ -116,15 +101,26 @@ with c4:
 
 # ---------------- RESUME UPLOAD ----------------
 st.markdown("### 📄 Optional: Upload Your Resume")
+
 uploaded_resume = st.file_uploader("Upload PDF or DOCX", type=["pdf","docx"])
 
+resume_skills = []
 if uploaded_resume:
     text = extract_resume_text(uploaded_resume)
-    skills = extract_skills(text)
-    st.write("**Skills detected:**", skills if skills else "No matching skills")
+    resume_skills = extract_skills(text)
+    st.write("**Skills detected from resume:**", resume_skills if resume_skills else "No matching skills")
 
 # ---------------- SUBMIT ----------------
 submit = st.button("🔍 Find Companies")
+
+# ---------------- CGPA LOGIC ----------------
+def allowed_levels(cgpa):
+    if cgpa >= 8.0:
+        return ["High","Mid","Low","Startup"]
+    elif cgpa >= 6.5:
+        return ["Mid","Low","Startup"]
+    else:
+        return ["Low","Startup"]
 
 # ---------------- CARD ----------------
 def show_card(row, tag):
@@ -135,35 +131,29 @@ def show_card(row, tag):
         "Startup": "#a855f7"
     }
 
+    skills = str(row.get("required_skills", "")).split(",")
+
     st.markdown(f"""
     <div class="card">
-        <div class="flex">
-            <img src="{get_logo(row['company_name'])}" class="logo"
-                 onerror="this.style.display='none'"/>
-            <div>
-                <h4 style="margin:0;">{row['company_name']}</h4>
-                <div style="margin-top:6px;">
-                    <span class="badge" style="background:{colors[row['company_level']]};">
-                        {row['company_level']}
-                    </span>
-                    <span class="badge" style="background:#334155;">
-                        {tag}
-                    </span>
-                </div>
-                <p style="margin-top:8px;">📍 {row['location']}</p>
-            </div>
+        <h4 style="margin:0;">🏢 {row['company_name']}</h4>
+
+        <div style="margin-top:6px;">
+            <span class="badge" style="background:{colors[row['company_level']]};">
+                {row['company_level']}
+            </span>
+            <span class="badge" style="background:#334155;">
+                {tag}
+            </span>
+        </div>
+
+        <p style="margin-top:8px;">📍 {row['location']}</p>
+
+        <p style="margin-top:10px; font-weight:600;">🧠 Required Skills</p>
+        <div>
+            {''.join([f"<span class='skill'>{s.strip()}</span>" for s in skills if s.strip()])}
         </div>
     </div>
     """, unsafe_allow_html=True)
-
-# ---------------- CGPA FILTER LOGIC ----------------
-def allowed_levels(cgpa):
-    if cgpa >= 8.0:
-        return ["High","Mid","Low","Startup"]
-    elif cgpa >= 6.5:
-        return ["Mid","Low","Startup"]
-    else:
-        return ["Low","Startup"]
 
 # ---------------- RESULTS ----------------
 if submit:
@@ -172,9 +162,7 @@ if submit:
         (df["department"] == department)
     ]
 
-    levels = allowed_levels(cgpa)
-
-    base = base[base["company_level"].isin(levels)]
+    base = base[base["company_level"].isin(allowed_levels(cgpa))]
 
     order = ["High","Mid","Low","Startup"]
     base["company_level"] = pd.Categorical(base["company_level"], order, ordered=True)
@@ -203,4 +191,4 @@ if submit:
 
 # ---------------- FOOTER ----------------
 st.markdown("---")
-st.caption("🚀 Final Career Recommendation System | Built with Streamlit")
+st.caption("🚀 Career Recommendation System | Skills-focused | Built with Streamlit")
