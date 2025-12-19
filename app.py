@@ -195,33 +195,31 @@ else:
         gap = missing_skills(user_skills, required)
         bar = skill_bar(match)
 
-        html = f"""
-        <div class="card">
-            <h4>🏢 {row['company_name']}</h4>
-
-            <span class="badge" style="background:{level_colors[row['company_level']]}; color:black;">
-                {row['company_level']}
-            </span>
-            <span class="badge" style="background:#334155;">{tag}</span>
-
-            <p>📍 {row['location']}</p>
-            <p><b>🧠 Skill Match:</b> {match}%</p>
-            <pre>{bar}</pre>
-
-            <b>🎯 Required Skills</b><br>
-            {"".join(f"<span class='skill'>{s}</span>" for s in required)}
-
-            <br><br><b>❌ Missing Skills</b><br>
-            {"".join(f"<span class='skill' style='background:#7f1d1d;'>{s}</span>" for s in gap[:5]) or "<span class='skill'>None 🎉</span>"}
-
-            <p><b>💡 Why this company?</b></p>
-            <ul>
-                <li>Eligible based on CGPA</li>
-                <li>Relevant to selected job role</li>
-                <li>Skill compatibility: {match}%</li>
-            </ul>
-        </div>
-        """
+        html = f"""<div class="card">
+                <h4>🏢 {row['company_name']}</h4>
+    
+                <span class="badge" style="background:{level_colors[row['company_level']]}; color:black;">
+                    {row['company_level']}
+                </span>
+                <span class="badge" style="background:#334155;">{tag}</span>
+    
+                <p>📍 {row['location']}</p>
+                <p><b>🧠 Skill Match:</b> {match}%</p>
+                <pre>{bar}</pre>
+    
+                <b>🎯 Required Skills</b><br>
+                {"".join(f"<span class='skill'>{s}</span>" for s in required)}
+    
+                <br><br><b>❌ Missing Skills</b><br>
+                {"".join(f"<span class='skill' style='background:#7f1d1d;'>{s}</span>" for s in gap[:5]) or "<span class='skill'>None 🎉</span>"}
+    
+                <p><b>💡 Why this company?</b></p>
+                <ul>
+                    <li>Eligible based on CGPA</li>
+                    <li>Relevant to selected job role</li>
+                    <li>Skill compatibility: {match}%</li>
+                </ul>
+            </div>"""
         st.markdown(html, unsafe_allow_html=True)
 
     # ---------------- RESULTS ----------------
