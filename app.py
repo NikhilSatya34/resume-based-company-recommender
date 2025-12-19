@@ -183,6 +183,7 @@ else:
         return "█" * filled + "░" * (10 - filled)
 
     # ---------------- CARD ----------------
+
     def show_card(row, tag):
         level_colors = {
             "High": "#22c55e",
@@ -190,51 +191,81 @@ else:
             "Low": "#38bdf8",
             "Startup": "#a855f7"
         }
-
+    
         required = [
             s.strip().lower()
             for s in str(row["required_skills"]).split(",")
             if s.strip()
         ]
-
+    
         match = calculate_skill_match(user_skills, required)
         gap = missing_skills(user_skills, required)
         bar = skill_bar(match)
-
+    
         html = f"""
+    <style>
+    .card {{
+        background: linear-gradient(145deg, #020617, #0f172a);
+        border-radius: 18px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 18px 40px rgba(0,0,0,0.6);
+        border: 1px solid rgba(255,255,255,0.08);
+        color: #e5e7eb;
+        font-family: Arial, sans-serif;
+    }}
+    .badge {{
+        padding: 5px 12px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+        margin-right: 6px;
+        display: inline-block;
+    }}
+    .skill {{
+        background: #1e293b;
+        color: #e5e7eb;
+        padding: 6px 12px;
+        border-radius: 999px;
+        font-size: 12px;
+        margin: 4px 6px 0 0;
+        display: inline-block;
+    }}
+    </style>
+    
     <div class="card">
       <h4>🏢 {row['company_name']}</h4>
-
+    
       <span class="badge" style="background:{level_colors[row['company_level']]}; color:black;">
         {row['company_level']}
       </span>
       <span class="badge" style="background:#334155;">{tag}</span>
-
+    
       <p>📍 {row['location']}</p>
       <p><b>🧠 Skill Match:</b> {match}%</p>
       <pre>{bar}</pre>
-
+    
       <b>🎯 Required Skills</b><br>
       {"".join(f"<span class='skill'>{s}</span>" for s in required)}
-
+    
       <br><br><b>❌ Missing Skills</b><br>
       {"".join(
             f"<span class='skill' style='background:#7f1d1d;'>{s}</span>"
             for s in gap[:5]
         ) or "<span class='skill'>None 🎉</span>"}
-
+    
       <p><b>💡 Why this company?</b></p>
       <ul>
-         <li>Eligible based on CGPA</li>
+        <li>Eligible based on CGPA</li>
         <li>Relevant to selected job role</li>
         <li>Skill compatibility: {match}%</li>
-     </ul>
+      </ul>
     </div>
     """
+    
+        components.html(html, height=540, scrolling=False)
 
-        components.html(html, height=520, scrolling=False)
-
-
+    
     # ---------------- RESULTS ----------------
     if submit:
         base = df[
