@@ -24,41 +24,58 @@ if not st.session_state.started:
 
     st.markdown("<br><br>", unsafe_allow_html=True)
 
+    # Title
     st.markdown(
         "<h1 style='text-align:center;'>🎓 Professional Pivot</h1>",
         unsafe_allow_html=True
     )
     st.markdown(
         "<h4 style='text-align:center; color:gray;'>"
-        "A reality-check platform for career decisions"
+        "A resume-driven career validation platform"
         "</h4>",
         unsafe_allow_html=True
     )
 
     st.markdown("---")
 
-    st.subheader("🎯 Purpose of this Website")
+    # Purpose / Description
+    st.subheader("📌 Project Description")
 
     st.write(
-        "**Professional Pivot** is not a normal job recommendation website. "
-        "This platform is designed to give students a **realistic career mirror**."
+        "**Professional Pivot** is a resume-driven career validation platform "
+        "designed to give students a **realistic understanding of their job readiness**. "
+        "Unlike traditional job recommendation systems that focus on user satisfaction, "
+        "this platform follows an **honesty-first approach**, where the resume and skills "
+        "act as the primary truth source."
     )
 
-    st.markdown("""
-    - 📄 **Your resume is the primary truth source**
-    - 🧠 Skills in your resume are matched with real job expectations
-    - ⚠️ If your profile is weak or mismatched, the system will **not please you**
-    - 🚀 Only realistic opportunities (including startups) are shown
-    - 🎓 Helps students understand **where they actually stand**, not where they wish to be
-    """)
+    st.write(
+        "The system analyzes the skills present in a student’s resume and strictly matches "
+        "them with real-world job role requirements across multiple domains such as "
+        "**Engineering, Medical, Pharmacy, Science, and Management**, for both **UG and PG** programs."
+    )
+
+    st.write(
+        "Professional Pivot does not guarantee recommendations for every user. "
+        "If a student’s selected stream, department, or job role does not align with the "
+        "skills found in their resume, the system clearly highlights the mismatch instead "
+        "of providing misleading results."
+    )
+
+    st.write(
+        "The platform is powered by a large-scale dataset containing "
+        "**11,000+ real-world company records**, categorized into **High, Mid, Low, and Startup** levels. "
+        "This strict and transparent approach prepares students to face real industry standards "
+        "and make informed career decisions."
+    )
 
     st.info(
-        "This honesty-driven approach prepares students for real industry "
-        "standards instead of false hopes."
+        "⚠️ This platform is intentionally strict. It reflects reality, not false motivation."
     )
 
     st.markdown("<br>", unsafe_allow_html=True)
 
+    # Get Started Button
     center_col = st.columns([1, 2, 1])[1]
     with center_col:
         if st.button("🚀 Get Started", use_container_width=True):
@@ -67,6 +84,7 @@ if not st.session_state.started:
 
     st.markdown("---")
 
+    # Footer Credit
     st.markdown(
         "<p style='text-align:center; color:#94a3b8; font-size:14px;'>"
         "Project developed by <b>B. Nikhil Satya</b> – CSD<br>"
