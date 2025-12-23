@@ -24,49 +24,40 @@ if not st.session_state.started:
 
     st.markdown("<br><br>", unsafe_allow_html=True)
 
+    st.markdown(
+        "<h1 style='text-align:center;'>🎓 Professional Pivot</h1>",
+        unsafe_allow_html=True
+    )
+    st.markdown(
+        "<h4 style='text-align:center; color:gray;'>"
+        "A reality-check platform for career decisions"
+        "</h4>",
+        unsafe_allow_html=True
+    )
+
+    st.markdown("---")
+
+    st.subheader("🎯 Purpose of this Website")
+
+    st.write(
+        "**Professional Pivot** is not a normal job recommendation website. "
+        "This platform is designed to give students a **realistic career mirror**."
+    )
+
     st.markdown("""
-        <h1 style='text-align:center;'>🎓 Professional Pivot</h1>
-        <h4 style='text-align:center; color:gray;'>
-        A reality-check platform for career decisions
-        </h4>
-    """, unsafe_allow_html=True)
+    - 📄 **Your resume is the primary truth source**
+    - 🧠 Skills in your resume are matched with real job expectations
+    - ⚠️ If your profile is weak or mismatched, the system will **not please you**
+    - 🚀 Only realistic opportunities (including startups) are shown
+    - 🎓 Helps students understand **where they actually stand**, not where they wish to be
+    """)
+
+    st.info(
+        "This honesty-driven approach prepares students for real industry "
+        "standards instead of false hopes."
+    )
 
     st.markdown("<br>", unsafe_allow_html=True)
-
-    st.markdown("""
-    <div style="
-        max-width:900px;
-        margin:auto;
-        background:#0f172a;
-        padding:25px;
-        border-radius:16px;
-        box-shadow:0 12px 30px rgba(0,0,0,0.6);
-        color:#e5e7eb;
-        font-size:16px;
-        line-height:1.7;
-    ">
-        <h3>🎯 Purpose of this Website</h3>
-        <p>
-        <b>Professional Pivot</b> is not a normal job recommendation website.
-        This platform is designed to give students a <b>realistic career mirror</b>.
-        </p>
-
-        <ul>
-            <li>📄 Your <b>resume is the primary truth source</b></li>
-            <li>🧠 Skills in your resume are matched with real job expectations</li>
-            <li>⚠️ If your profile is weak or mismatched, the system will <b>not please you</b></li>
-            <li>🚀 Only realistic opportunities (including startups) are shown</li>
-            <li>🎓 Helps students understand <b>where they actually stand</b>, not where they wish to be</li>
-        </ul>
-
-        <p style="color:#94a3b8;">
-        This honesty-driven approach prepares students for real industry standards
-        instead of false hopes.
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
-
-    st.markdown("<br><br>", unsafe_allow_html=True)
 
     center_col = st.columns([1, 2, 1])[1]
     with center_col:
@@ -74,16 +65,15 @@ if not st.session_state.started:
             st.session_state.started = True
             st.rerun()
 
-    st.markdown("<br><br>", unsafe_allow_html=True)
+    st.markdown("---")
 
-    # ----------- FOOTER CREDIT -----------
-    st.markdown("""
-        <hr style="border:1px solid #1e293b;">
-        <p style="text-align:center; color:#94a3b8; font-size:14px;">
-        Project developed by <b>B. Nikhil Satya</b> – CSD <br>
-        <b>25ALCSD002</b>
-        </p>
-    """, unsafe_allow_html=True)
+    st.markdown(
+        "<p style='text-align:center; color:#94a3b8; font-size:14px;'>"
+        "Project developed by <b>B. Nikhil Satya</b> – CSD<br>"
+        "<b>25ALCSD002</b>"
+        "</p>",
+        unsafe_allow_html=True
+    )
 
 # -------------------------------------------------
 # MAIN APP
