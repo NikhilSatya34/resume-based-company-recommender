@@ -190,6 +190,8 @@ else:
                 ]["job_role"].unique()
             )
         )
+    with c5:
+    cgpa = st.slider("CGPA", 5.0, 10.0, 7.0, 0.1)
     
     resume = st.file_uploader(
         "📄 Upload Resume (Mandatory)",
