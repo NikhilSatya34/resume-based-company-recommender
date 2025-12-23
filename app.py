@@ -227,25 +227,83 @@ else:
     def skill_bar(percent):
         return "█" * (percent // 10) + "░" * (10 - percent // 10)
 
-    # ---------------- CARD ----------------
+    #------------CARDS-------------
+
     def show_card(row, tag):
 
-        required = [s.strip() for s in row["required_skill"].split(",")]
-        match = calculate_skill_match(user_skills, required)
+    # Skill parsing
+    required = [s.strip() for s in row["required_skill"].split(",")]
+    match = calculate_skill_match(user_skills, required)
 
-        html = f"""
-        <div class="card">
-            <h4>🏢 {row['company_name']}</h4>
-            <span class="badge">{row['company_level']}</span>
-            <span class="badge">{tag}</span>
-            <p>📍 {row['location']}</p>
-            <p><b>Skill Match:</b> {match}%</p>
-            <pre>{skill_bar(match)}</pre>
-            <b>Required Skills</b><br>
-            {"".join(f"<span class='skill'>{s}</span>" for s in required)}
-        </div>
-        """
-        components.html(html, height=350)
+    # Skill color
+    if match >= 70:
+        match_color = "#22c55e"   # green
+    elif match >= 40:
+        match_color = "#facc15"   # yellow
+    else:
+        match_color = "#ef4444"   # red
+
+    html = f"""
+    <style>
+    .pp-card {{
+        background: linear-gradient(145deg, #020617, #0f172a);
+        border-radius: 18px;
+        padding: 22px;
+        margin-bottom: 22px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+        border: 1px solid rgba(255,255,255,0.08);
+        color: #e5e7eb;
+        font-family: Arial, sans-serif;
+    }}
+    .pp-title {{
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 6px;
+    }}
+    .pp-location {{
+        color: #94a3b8;
+        font-size: 14px;
+        margin-bottom: 10px;
+    }}
+    .pp-badge {{
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+        background: #334155;
+        margin-right: 6px;
+    }}
+    .pp-skill {{
+        background: #1e293b;
+        padding: 6px 12px;
+        border-radius: 999px;
+        font-size: 12px;
+        margin: 4px 6px 0 0;
+        display: inline-block;
+    }}
+    </style>
+
+    <div class="pp-card">
+        <div class="pp-title">🏢 {row['company_name']}</div>
+        <div class="pp-location">📍 {row['location']}</div>
+
+        <span class="pp-badge">{row['company_level']}</span>
+        <span class="pp-badge">{tag}</span>
+
+        <p style="margin-top:12px;">
+            <b>Skill Match:</b>
+            <span style="color:{match_color}; font-weight:700;">
+                {match}%
+            </span>
+        </p>
+
+        <b>Required Skills</b><br>
+        {"".join(f"<span class='pp-skill'>{s}</span>" for s in required)}
+    </div>
+    """
+
+    components.html(html, height=330, scrolling=False)
 
     # ---------------- RESULTS ----------------
     if submit:
