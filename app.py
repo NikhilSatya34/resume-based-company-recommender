@@ -155,48 +155,45 @@ else:
     c1, c2, c3, c4, c5 = st.columns(5)
     
     with c1:
-    stream = st.selectbox(
-        "Stream",
-        sorted(df["stream"].unique())
-    )
+        stream = st.selectbox(
+            "Stream",
+            sorted(df["stream"].unique())
+        )
     
     with c2:
-    course = st.selectbox(
-        "Course",
-        sorted(
-            df[df["stream"] == stream]["course"].unique()
-        )
-    )
+         course = st.selectbox(
+            "Course",
+             sorted(
+                df[df["stream"] == stream]["course"].unique()
+            )
+         )
     
     with c3:
-    department = st.selectbox(
-        "Department",
-        sorted(
-            df[
-                (df["stream"] == stream) &
-                (df["course"] == course)
-            ]["department"].unique()
-        )
-    )
+        department = st.selectbox(
+            "Department",
+            sorted(
+                df[
+                    (df["stream"] == stream) &
+                    (df["course"] == course)
+                    ]["department"].unique()
+            )
+         )
     
     with c4:
-    role = st.selectbox(
-        "Job Role",
-        sorted(
-            df[
-                (df["stream"] == stream) &
-                (df["course"] == course) &
-                (df["department"] == department)
-            ]["job_role"].unique()
+        role = st.selectbox(
+            "Job Role",
+             sorted(
+                df[
+                    (df["stream"] == stream) &
+                    (df["course"] == course) &
+                    (df["department"] == department)
+                ]["job_role"].unique()
+            )
         )
-    )
-    
-    with c5:
-    cgpa = st.slider("CGPA", 5.0, 10.0, 7.0, 0.1)
     
     resume = st.file_uploader(
-    "📄 Upload Resume (Mandatory)",
-    type=["txt", "pdf", "docx"]
+        "📄 Upload Resume (Mandatory)",
+        type=["txt", "pdf", "docx"]
     )
 
     submit = st.button("🔍 Validate Profile")
