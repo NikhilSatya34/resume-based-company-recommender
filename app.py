@@ -142,10 +142,11 @@ else:
     with c4:
         cgpa = st.slider("CGPA", 5.0, 10.0, 7.0, 0.1)
 
-    resume = st.file_uploader(
-        "Optional: Upload Resume (TXT / PDF / DOCX)",
+       resume = st.file_uploader(
+        "📄 Upload Resume (Required)",
         type=["txt", "pdf", "docx"]
     )
+
 
     submit = st.button("🔎 Find Companies")
 
