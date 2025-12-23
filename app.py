@@ -69,6 +69,14 @@ if not st.session_state.started:
         "and make informed career decisions."
     )
 
+    st.markdown("""
+    - 📄 **Your resume is the primary truth source**
+    - 🧠 Skills in your resume are matched with real job expectations
+    - ⚠️ If your profile is weak or mismatched, the system will **not please you**
+    - 🚀 Only realistic opportunities (including startups) are shown
+    - 🎓 Helps students understand **where they actually stand**, not where they wish to be
+    """)
+    
     st.info(
         "⚠️ This platform is intentionally strict. It reflects reality, not false motivation."
     )
