@@ -23,64 +23,59 @@ if not st.session_state.started:
 
     st.markdown("<br><br>", unsafe_allow_html=True)
 
-    st.markdown("""
-    <h1 style='text-align:center;'>🎓 Professional Pivot</h1>
-    <h4 style='text-align:center; color:#94a3b8;'>
-        Resume-driven Career Reality Check
-    </h4>
-    """, unsafe_allow_html=True)
-
-    st.markdown("---")
-
-    st.markdown("""
-    ### 🎯 Purpose of this Website
-    **Professional Pivot** is not a normal job recommendation platform.
-
-    - 📄 Resume is the **primary truth source**
-    - 🧠 Skills are validated against **real job expectations**
-    - ⚠️ Weak or mismatched profiles are **not comforted**
-    - 🚀 Only realistic opportunities are shown
-    - 🔍 Helps students understand **where they actually stand**
-    """)
-
-    st.info(
-        "This honesty-driven platform prepares students for "
-        "real industry standards instead of false hopes."
+    st.markdown(
+        "<h1 style='text-align:center;'>🎓 Professional Pivot</h1>",
+        unsafe_allow_html=True
+    )
+    st.markdown(
+        "<h4 style='text-align:center;color:gray;'>Resume &gt; Skills &gt; Reality</h4>",
+        unsafe_allow_html=True
     )
 
-    col = st.columns([1, 2, 1])[1]
-    with col:
-        if st.button("🚀 Get Started", use_container_width=True):
-            st.session_state.started = True
-            st.rerun()
-
     st.markdown("---")
+
+    st.write("""
+    **Professional Pivot** is a career validation platform, not a job portal.
+
+    It strictly analyzes skills from your resume and compares them with
+    **real-world job requirements** across **UG & PG**, **all streams**.
+
+    If your profile is weak or mismatched, the system will not please you.
+    It will show only **realistic outcomes**.
+    """)
+
+    st.info("⚠️ Resume is the only truth source in this system.")
+
+    if st.button("🚀 Get Started"):
+        st.session_state.started = True
+        st.rerun()
+
     st.markdown(
-        "<p style='text-align:center; color:#94a3b8;'>"
+        "<p style='text-align:center;color:#94a3b8;'>"
         "Project developed by <b>B. Nikhil Satya</b> – CSD<br>"
         "<b>25ALCSD002</b></p>",
         unsafe_allow_html=True
     )
 
 # -------------------------------------------------
-# MAIN APPLICATION
+# MAIN APP
 # -------------------------------------------------
 else:
 
-    # ---------------- HEADER ----------------
-    c1, c2 = st.columns([1, 9])
-    with c1:
+    # Back button + Header
+    col1, col2 = st.columns([1, 9])
+    with col1:
         if st.button("⬅ Back"):
             st.session_state.started = False
             st.rerun()
 
-    with c2:
+    with col2:
         st.markdown("""
         <h1 style="margin-bottom:0;">🎓 Professional Pivot</h1>
         <p style="color:#94a3b8;">Resume &gt; Skills &gt; Reality</p>
         """, unsafe_allow_html=True)
 
-    # ---------------- LOAD DATA ----------------
+    # Load data
     @st.cache_data
     def load_data():
         return pd.read_csv("new1.csv")
@@ -143,10 +138,18 @@ else:
 
         resume_text = resume.read().decode(errors="ignore").lower()
 
-        all_skills = set(
-            ",".join(df["required_skill"].dropna()).lower().split(",")
-        )
-        user_skills = [s.strip() for s in all_skills if s.strip() in resume_text]
+        # 🔥 GENERIC SKILL EXTRACTION (NO HARD CODING)
+        all_required_skills = set()
+        for skills in df["required_skill"].dropna():
+            for s in skills.split(","):
+                all_required_skills.add(s.strip().lower())
+
+        user_skills = [s for s in all_required_skills if s in resume_text]
+
+        def skill_match(required):
+            if not required:
+                return 0
+            return int((len(set(user_skills) & set(required)) / len(set(required))) * 100)
 
         base = df[
             (df["stream"] == stream) &
@@ -161,37 +164,21 @@ else:
         shown = False
 
         for i, (_, row) in enumerate(base.iterrows()):
-
             required = [s.strip().lower() for s in row["required_skill"].split(",")]
+            match = skill_match(required)
 
-            matched = set(required) & set(user_skills)
-            missing = set(required) - set(user_skills)
-
-            match_percent = int((len(matched) / len(required)) * 100) if required else 0
-
-            # Readiness label
-            if match_percent <= 30:
-                readiness = "❌ Not Ready"
-                prep = "4–6 months"
-            elif match_percent <= 60:
-                readiness = "⚠️ Partially Ready"
-                prep = "2–3 months"
-            elif match_percent <= 80:
-                readiness = "✅ Near Ready"
-                prep = "1–2 months"
-            else:
-                readiness = "🚀 Job Ready"
-                prep = "0–1 month"
+            if match == 0:
+                continue
 
             shown = True
 
-            # Skill display with ✔ ❌
+            # ✔ ❌ Skill display
             skills_html = ""
-            for skill in required:
-                if skill in matched:
-                    skills_html += f"<span style='color:#22c55e;'>✔ {skill}</span> &nbsp; "
+            for s in required:
+                if s in user_skills:
+                    skills_html += f"<span style='color:#22c55e;'>✔ {s}</span><br>"
                 else:
-                    skills_html += f"<span style='color:#ef4444;'>❌ {skill}</span> &nbsp; "
+                    skills_html += f"<span style='color:#ef4444;'>❌ {s}</span><br>"
 
             with cols[i % 2]:
                 st.markdown(f"""
@@ -200,32 +187,19 @@ else:
                     padding:18px;
                     border-radius:16px;
                     margin-bottom:20px;
-                    box-shadow:0 14px 35px rgba(0,0,0,0.6);
+                    box-shadow:0 12px 30px rgba(0,0,0,0.6);
                 ">
                     <h4>🏢 {row['company_name']}</h4>
-                    <p>📍 {row['location']} | <b>{row['company_level']}</b></p>
-
-                    <p><b>Skill Match:</b> {match_percent}%</p>
-                    <p><b>Readiness:</b> {readiness}</p>
-                    <p><b>Missing Skills:</b> {len(missing)} / {len(required)}</p>
-                    <p><b>Estimated Prep Time:</b> {prep}</p>
-
-                    <hr style="border:0.5px solid #1e293b;">
-                    <b>Required Skills</b><br>
+                    <p>📍 {row['location']} | Level: {row['company_level']}</p>
+                    <p><b>Skill Match:</b> {match}%</p>
+                    <hr>
+                    <b>Required Skills Validation</b><br>
                     {skills_html}
-
-                    <hr style="border:0.5px solid #1e293b;">
-                    <b>Why shown?</b>
-                    <ul>
-                        <li>Matches selected role</li>
-                        <li>Resume skills evaluated</li>
-                        <li>CGPA eligible</li>
-                    </ul>
                 </div>
                 """, unsafe_allow_html=True)
 
         if not shown:
             st.warning(
-                "⚠️ Your resume skills do not align with the selected job role. "
-                "Please improve your skills or update your resume."
+                "⚠️ Your resume does not align with the selected job role. "
+                "Please improve skills or choose a realistic role."
             )
