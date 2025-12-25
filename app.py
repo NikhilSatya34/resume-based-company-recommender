@@ -136,15 +136,18 @@ else:
             st.warning("⚠️ Kindly Upload the Resume")
             st.stop()
 
+            # -------- RESUME SKILL EXTRACTION (GENERIC) --------
         resume_text = resume.read().decode(errors="ignore").lower()
-
-        # 🔥 GENERIC SKILL EXTRACTION (NO HARD CODING)
-        all_required_skills = set()
+        
+        # Collect ALL skills from dataset (all domains)
+        all_skills = set()
+        
         for skills in df["required_skill"].dropna():
-            for s in skills.split(","):
-                all_required_skills.add(s.strip().lower())
-
-        user_skills = [s for s in all_required_skills if s in resume_text]
+        for s in skills.lower().split(","):
+            all_skills.add(s.strip())
+        
+        # Extract only skills present in resume
+        user_skills = [skill for skill in all_skills if skill and skill in resume_text]
 
         def skill_match(required):
             if not required:
