@@ -221,6 +221,5 @@ else:
                        margin-top:10px;
                     ">
                        {skill_html}
-                     </div>
                 </div>
                 """, unsafe_allow_html=True)
