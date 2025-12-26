@@ -214,6 +214,9 @@ else:
                 ">
                     <h4>🏢 {row['company_name']}</h4>
                     <p>📍 {row['location']} | <b>{row['company_level']}</b></p>
+                    <p style="color:#94a3b8; margin-bottom:6px;">
+                        🎯 Role: <b>{row['job_role']}</b>
+                    </p>
                     <p><b>Skill Match:</b> {match}%</p>
                     <b>Required Skills</b><br>
                     {skill_html}
