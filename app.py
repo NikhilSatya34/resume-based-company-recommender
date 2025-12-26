@@ -213,7 +213,14 @@ else:
                     <p>📍 {row['location']} | <b>{row['company_level']}</b></p>
                     <p>🎯 <b>Selected Role:</b> {role} </p>
                     <p><b>Skill Match:</b> {match}%</p>
-                    <b>Required Skills</b><br>
-                    <div style="margin-top:10px;">{skill_html}</div>
+                    <b>Required Skills</b>
+                    <div style="
+                        display:flex;
+                        flex-wrap:wrap;
+                        gap:10px;
+                       margin-top:10px;
+                    ">
+                       {skill_html}
+                    </div>
                 </div>
                 """, unsafe_allow_html=True)
