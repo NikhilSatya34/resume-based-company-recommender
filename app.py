@@ -142,10 +142,8 @@ else:
             st.warning("⚠️ Kindly Upload the Resume")
             st.stop()
 
-        # ---------- Resume text extraction (SAFE) ----------
         resume_text = resume.read().decode(errors="ignore").lower()
 
-        # ---------- Build skill universe dynamically ----------
         all_skills = set(
             ",".join(df["required_skill"].dropna())
             .lower().split(",")
@@ -173,14 +171,10 @@ else:
             st.stop()
 
         cols = st.columns(2)
-        shown = False
 
         for i, (_, row) in enumerate(base.iterrows()):
             required = {s.strip().lower() for s in row["required_skill"].split(",")}
             match = skill_match(user_skills, required)
-
-            # Show even low match (honesty mode)
-            shown = True
 
             skill_html = ""
             for s in required:
@@ -192,13 +186,16 @@ else:
                 skill_html += f"""
                 <span style="
                     background:#1e293b;
-                    padding:6px 12px;
+                    padding:6px 14px;
                     border-radius:999px;
-                    margin:4px;
-                    display:inline-block;
+                    margin:6px;
+                    display:inline-flex;
+                    align-items:center;
+                    gap:6px;
                     color:white;
+                    font-size:13px;
                 ">
-                <span style="color:{color};font-weight:bold;">{mark}</span> {s}
+                    <span style="color:{color};font-weight:bold;">{mark}</span>{s}
                 </span>
                 """
 
@@ -206,25 +203,17 @@ else:
                 st.markdown(f"""
                 <div style="
                     background:#020617;
-                    padding:20px;
+                    padding:22px;
                     border-radius:18px;
-                    margin-bottom:20px;
+                    margin-bottom:24px;
                     box-shadow:0 15px 40px rgba(0,0,0,0.6);
                     color:#e5e7eb;
                 ">
                     <h4>🏢 {row['company_name']}</h4>
                     <p>📍 {row['location']} | <b>{row['company_level']}</b></p>
-                    <p style="margin:6px 0;">
-                        🎯 <b>Role:</b> {selected_role}
-                    </p>
+                    <p>🎯 <b>Selected Role:</b> {role}</p>
                     <p><b>Skill Match:</b> {match}%</p>
                     <b>Required Skills</b><br>
-                    {skill_html}
+                    <div style="margin-top:10px;">{skill_html}</div>
                 </div>
                 """, unsafe_allow_html=True)
-
-        if not shown:
-            st.warning(
-                "⚠️ Your resume does not align with this role. "
-                "Please upskill or update your resume."
-            )
