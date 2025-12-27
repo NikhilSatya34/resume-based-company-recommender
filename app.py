@@ -6,7 +6,7 @@ import pandas as pd
 # -------------------------------------------------
 st.set_page_config(
     page_title="Professional Pivot",
-    page_icon="🎓",
+    page_icon="fevicon for project.png",
     layout="wide"
 )
 
