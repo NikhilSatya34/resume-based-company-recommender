@@ -23,7 +23,7 @@ def header(show_start_button=False):
     col1, col2, col3 = st.columns([1.4, 7.1, 1.5])
 
     with col1:
-        st.image("fevicon_project.png", width=100)
+        st.image("fevicon_project.png", width=150)
 
     with col2:
         st.markdown(
@@ -40,7 +40,7 @@ def header(show_start_button=False):
 
     with col3:
         if show_start_button:
-            if st.button("🚀 Start"):
+            if st.button("🚀 Start Career Analysis"):
                 st.session_state.started = True
                 st.rerun()
 
@@ -52,7 +52,11 @@ def header(show_start_button=False):
 if not st.session_state.started:
 
     header(show_start_button=True)
-
+    
+    st.info(
+    "ℹ️ This platform evaluates career readiness, not job availability."
+     )
+    
     st.markdown("""
     ## 🚀 About the Project
 
