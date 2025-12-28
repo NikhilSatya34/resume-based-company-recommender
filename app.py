@@ -36,7 +36,7 @@ def header():
             unsafe_allow_html=True
         )
 
-    st.markdown("---")
+     st.markdown("<hr style='border:1px solid #1f2933;'>", unsafe_allow_html=True)
 
 # -------------------------------------------------
 # INTRO PAGE
