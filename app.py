@@ -6,7 +6,7 @@ import pandas as pd
 # -------------------------------------------------
 st.set_page_config(
     page_title="Professional Pivot",
-    page_icon="fevicon for project.png",
+    page_icon="fevicon_project.png",
     layout="wide"
 )
 
@@ -19,25 +19,32 @@ if "started" not in st.session_state:
 # -------------------------------------------------
 # INTRO PAGE
 # -------------------------------------------------
+# ---------------- INTRO PAGE ----------------
 if not st.session_state.started:
 
-    st.markdown("<br><br>", unsafe_allow_html=True)
-    st.markdown(
-        "<h1 style='text-align:center;'>🎓 Professional Pivot</h1>",
-        unsafe_allow_html=True
-    )
-    st.markdown(
-        "<h4 style='text-align:center;color:gray;'>Resume → Skills → Reality</h4>",
-        unsafe_allow_html=True
-    )
+    col1, col2 = st.columns([1, 7])
+
+    with col1:
+        st.image("fevicon_project.png", width=80)
+
+    with col2:
+        st.markdown(
+            """
+            <h1 style="margin-bottom:0;">Professional Pivot</h1>
+            <p style="color:gray;font-size:18px;margin-top:0;">
+            Resume → Skills → Reality
+            </p>
+            """,
+            unsafe_allow_html=True
+        )
 
     st.markdown("---")
 
-    st.write(
-        "**Professional Pivot** is not a job portal. "
-        "It is a **career reality-check platform** that validates "
-        "a student’s resume against real job requirements."
-    )
+    st.write("""
+    **Professional Pivot** is a smart career recommendation system that helps students
+    make informed and realistic career decisions. The system analyzes a student's
+    academic profile, skills, and interests to suggest suitable companies and career paths.
+    """)
 
     st.info(
         "⚠️ Resume is the single source of truth. "
