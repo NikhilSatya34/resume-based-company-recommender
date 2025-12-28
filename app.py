@@ -23,7 +23,7 @@ def header(show_start_button=False):
     col1, col2, col3 = st.columns([1.2, 7.3, 1.5])
 
     with col1:
-        st.image("fevicon_project.png", width=150)
+        st.image("fevicon_project.png", width=180)
 
     with col2:
         st.markdown(
@@ -40,7 +40,7 @@ def header(show_start_button=False):
 
     with col3:
         if show_start_button:
-            if st.button("🚀 Start"):
+            if st.button("🚀 Start Career Analysis"):
                 st.session_state.started = True
                 st.rerun()
 
@@ -119,8 +119,6 @@ if not st.session_state.started:
     """)
 
     st.markdown("<br>", unsafe_allow_html=True)
-
-    st.button("🚀 Start Career Analysis", on_click=lambda: st.session_state.update(started=True))
 
     st.markdown(
     """
