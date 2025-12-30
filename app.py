@@ -152,6 +152,7 @@ else:
                 "Course",
                 sorted(df[df["stream"] == stream]["course"].unique())
             )
+    
             if st.button("Confirm Course"):
                 st.session_state.course_ok = True
 
