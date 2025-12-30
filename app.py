@@ -210,9 +210,29 @@ else:
             st.warning("⚠️ Please upload your resume to proceed.")
             st.stop()
 
+        # -------------------------------
+        # Extract resume text
+        # -------------------------------
         resume_text = resume.read().decode(errors="ignore").lower()
-
-                # Base filter (already present in your code)
+        
+        # -------------------------------
+        # Collect all skills from dataset
+        # -------------------------------
+        all_skills = set(
+            ",".join(df["required_skill"].dropna())
+            .lower()
+            .split(",")
+        )
+        all_skills = {s.strip() for s in all_skills if s.strip()}
+        
+        # -------------------------------
+        # Skills present in resume
+        # -------------------------------
+        user_skills = {s for s in all_skills if s in resume_text}
+        
+        # -------------------------------
+        # Required skills for selected role
+        # -------------------------------
         base_df = df[
             (df["stream"] == stream) &
             (df["course"] == course) &
@@ -220,13 +240,11 @@ else:
             (df["job_role"] == role)
         ]
         
-        # 🔴 STRICT RESUME vs ROLE VALIDATION
         role_skills = {
             s.strip().lower()
             for s in ",".join(base_df["required_skill"]).split(",")
         }
-        
-        matched_skills = role_skills & user_skills
+
         
         if not matched_skills:
             st.warning(
