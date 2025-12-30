@@ -144,15 +144,22 @@ else:
         )
 
     with col3:
-        department = st.selectbox(
-            "Department",
-            sorted(
-                df[
-                    (df["stream"] == stream) &
-                    (df["course"] == course)
-                ]["department"].unique()
-            )
-        )
+            dept_options = sorted(
+        df[
+            (df["stream"] == stream) &
+            (df["course"] == course)
+        ]["department"].unique()
+    )
+    
+    department = st.selectbox(
+        "Department",
+        ["Select Department"] + dept_options,
+        index=0
+    )
+    
+    if department == "Select Department":
+        st.stop()
+
 
     with col4:
         filtered_roles_df = df[
