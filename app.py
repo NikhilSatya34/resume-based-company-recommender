@@ -25,6 +25,14 @@ def load_data():
     return pd.read_csv("newlyadded_deduplicated.csv")
 
 df = load_data()
+# -------------------------------
+# DATA NORMALIZATION (CRITICAL)
+# -------------------------------
+df["stream"] = df["stream"].astype(str).str.strip().str.upper()
+df["course"] = df["course"].astype(str).str.strip()
+df["department"] = df["department"].astype(str).str.strip().str.upper()
+df["job_role"] = df["job_role"].astype(str).str.strip()
+df["company_level"] = df["company_level"].astype(str).str.strip().str.upper()
 
 # -------------------------------------------------
 # COMMON HEADER (INTRO + MAIN)
@@ -176,6 +184,31 @@ else:
 
         resume_text = resume.read().decode(errors="ignore").lower()
 
+                # Base filter (already present in your code)
+        base_df = df[
+            (df["stream"] == stream) &
+            (df["course"] == course) &
+            (df["department"] == department) &
+            (df["job_role"] == role)
+        ]
+        
+        # 🔴 STRICT RESUME vs ROLE VALIDATION
+        role_skills = {
+            s.strip().lower()
+            for s in ",".join(base_df["required_skill"]).split(",")
+        }
+        
+        matched_skills = role_skills & user_skills
+        
+        if not matched_skills:
+            st.warning(
+                "⚠️ Your resume does NOT match the selected job role.\n\n"
+                "👉 Please select a role relevant to your resume "
+                "or update your resume with required skills."
+            )
+            st.stop()
+
+
         # Collect all skills from dataset
         all_skills = set(
             ",".join(df["required_skill"].dropna())
@@ -191,14 +224,6 @@ else:
             if not user or not required:
                 return 0
             return int(len(user & required) / len(required) * 100)
-
-        # Base filter
-        base_df = df[
-            (df["stream"] == stream) &
-            (df["course"] == course) &
-            (df["department"] == department) &
-            (df["job_role"] == role)
-        ]
 
         if base_df.empty:
             st.warning("⚠️ No data available for the selected inputs.")
