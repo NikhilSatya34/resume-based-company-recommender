@@ -145,10 +145,12 @@ else:
             disabled=not st.session_state.course_ok
         )
     
-        if st.session_state.course_ok:
-            if st.button("Confirm Department"):
-                st.session_state.dept_ok = True
-
+        if st.button(
+            "Confirm Department",
+            disabled=not st.session_state.course_ok
+        ):
+            st.session_state.dept_ok = True
+            st.session_state.role_ok = False
 
     # ---------- Job Role ----------
     with col4:
