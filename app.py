@@ -161,8 +161,10 @@ else:
 
             role = st.selectbox(
                 "Job Role",
-                sorted(roles_df["job_role"].unique())
+                sorted(roles_df["job_role"].unique()),
+                key=f"role_{stream}_{course}_{department}"
             )
+
 
             if st.button("Confirm Role"):
                 st.session_state.role_ok = True
