@@ -251,42 +251,42 @@ else:
 
             with cols[i % 2]:
                 st.markdown(f"""
-                <div style="
-                    background:#020617;
-                    padding:20px;
-                    border-radius:18px;
-                    margin-bottom:20px;
-                    box-shadow:0 15px 40px rgba(0,0,0,0.6);
-                    color:white;
-                ">
-                    <h4>🏢 {row['company_name']}</h4>
-                    <p>📍 {row['location']}</p>
-                    <p>🎯 <b>Role:</b> {role}</p>
-
-                    <b>Skill Match</b>
-                    <div style="background:#1e293b;border-radius:10px;">
-                        <div style="
-                            width:{match}%;
-                            background:#22c55e;
-                            padding:6px;
-                            border-radius:10px;
-                            text-align:right;
-                            color:black;
-                        ">
-                            {match}%
+                    <div style="
+                        background:#020617;
+                        padding:20px;
+                        border-radius:18px;
+                        margin-bottom:20px;
+                        box-shadow:0 15px 40px rgba(0,0,0,0.6);
+                        color:white;
+                    ">
+                        <h4>🏢 {row['company_name']}</h4>
+                        <p>📍 {row['location']}</p>
+                        <p>🎯 <b>Role:</b> {role}</p>
+                    
+                        <b>Skill Match</b>
+                        <div style="background:#1e293b;border-radius:10px;">
+                            <div style="
+                                width:{match}%;
+                                background:#22c55e;
+                                padding:6px;
+                                border-radius:10px;
+                                text-align:right;
+                                color:black;
+                            ">
+                                {match}%
+                            </div>
                         </div>
+                    
+                        <p style="margin-top:10px;"><b>Required Skills</b></p>
+                        <ul>
+                            {''.join(
+                                f"<li>{'✔️' if s in user_skills else '❌'} {s}</li>"
+                                for s in req
+                            )}
+                        </ul>
+                    
+                        <p style="color:#fca5a5;">
+                        Focus on improving ❌ marked skills to increase eligibility.
+                        </p>
                     </div>
-
-                    <p style="margin-top:10px;"><b>Required Skills</b></p>
-                    <ul>
-                        {''.join(
-                            f"<li>{'✔️' if s in user_skills else '❌'} {s}</li>"
-                            for s in req
-                        )}
-                    </ul>
-
-                    <p style="color:#fca5a5;">
-                    Focus on improving ❌ marked skills to increase eligibility.
-                    </p>
-                </div>
-                """, unsafe_allow_html=True)
+                    """, unsafe_allow_html=True)
