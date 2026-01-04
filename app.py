@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-
+from streamlit.components.v1 import html
 
 # -------------------------------------------------
 # PAGE CONFIG
@@ -27,7 +27,7 @@ def load_data():
 df = load_data()
 
 # -------------------------------------------------
-# COMMON HEADER (INTRO + MAIN)
+# COMMON HEADER
 # -------------------------------------------------
 def header(show_start=False, show_back=False):
     c1, c2, c3 = st.columns([1, 7, 2])
@@ -45,10 +45,8 @@ def header(show_start=False, show_back=False):
 
     with c3:
         if show_start:
-            st.button(
-                "🚀 Start Career Analysis",
-                on_click=lambda: st.session_state.update(started=True)
-            )
+            st.button("🚀 Start Career Analysis",
+                      on_click=lambda: st.session_state.update(started=True))
         if show_back:
             if st.button("⬅ Back"):
                 st.session_state.started = False
@@ -114,7 +112,6 @@ if not st.session_state.started:
     **Department:** CSD  
     **College:** Annamacharya University
     """)
-
 # -------------------------------------------------
 # MAIN PAGE
 # -------------------------------------------------
@@ -171,20 +168,17 @@ else:
     if submit:
 
         if not resume:
-            st.warning("⚠️ Please upload your resume to proceed.")
+            st.warning("⚠️ Please upload your resume.")
             st.stop()
 
         resume_text = resume.read().decode(errors="ignore").lower()
 
-        # Collect all skills from dataset
         all_skills = set(
             ",".join(df["required_skill"].dropna())
             .lower()
             .split(",")
         )
         all_skills = {s.strip() for s in all_skills if s.strip()}
-
-        # Skills present in resume
         user_skills = {s for s in all_skills if s in resume_text}
 
         def skill_match(user, required):
@@ -192,7 +186,6 @@ else:
                 return 0
             return int(len(user & required) / len(required) * 100)
 
-        # Base filter
         base_df = df[
             (df["stream"] == stream) &
             (df["course"] == course) &
@@ -201,7 +194,7 @@ else:
         ]
 
         if base_df.empty:
-            st.warning("⚠️ No data available for the selected inputs.")
+            st.warning("⚠️ No data available.")
             st.stop()
 
         required_skills = {
@@ -211,7 +204,6 @@ else:
 
         skill_percent = skill_match(user_skills, required_skills)
 
-        # Skill % → company level mapping
         if skill_percent >= 70:
             allowed_levels = ["High", "Mid"]
         elif skill_percent >= 40:
@@ -220,7 +212,6 @@ else:
             allowed_levels = ["Low", "STARTUP"]
 
         st.subheader("📊 Career Reality Check")
-
         st.info(
             f"Based on your **{skill_percent}% skill match**, "
             f"showing **{', '.join(allowed_levels)} level companies**."
@@ -234,10 +225,7 @@ else:
         ]
 
         if final_df.empty:
-            st.warning(
-                "❌ No matching companies found based on your current skill level.\n\n"
-                "👉 Focus on improving ❌ marked skills to unlock recommendations."
-            )
+            st.warning("❌ No companies found. Improve skills.")
             st.stop()
 
         cols = st.columns(2)
@@ -250,43 +238,41 @@ else:
                 continue
 
             with cols[i % 2]:
-                st.markdown(f"""
-                    <div style="
-                        background:#020617;
-                        padding:20px;
-                        border-radius:18px;
-                        margin-bottom:20px;
-                        box-shadow:0 15px 40px rgba(0,0,0,0.6);
-                        color:white;
-                    ">
-                        <h4>🏢 {row['company_name']}</h4>
-                        <p>📍 {row['location']}</p>
-                        <p>🎯 <b>Role:</b> {role}</p>
-                    
-                        <b>Skill Match</b>
-                        <div style="background:#1e293b;border-radius:10px;">
-                            <div style="
-                                width:{match}%;
-                                background:#22c55e;
-                                padding:6px;
-                                border-radius:10px;
-                                text-align:right;
-                                color:black;
-                            ">
-                                {match}%
-                            </div>
-                        </div>
-                    
-                        <p style="margin-top:10px;"><b>Required Skills</b></p>
-                        <ul>
-                            {''.join(
-                                f"<li>{'✔️' if s in user_skills else '❌'} {s}</li>"
-                                for s in req
-                            )}
-                        </ul>
-                    
-                        <p style="color:#fca5a5;">
-                        Focus on improving ❌ marked skills to increase eligibility.
-                        </p>
-                    </div>
-                    """, unsafe_allow_html=True)
+                html(f"""
+<div style="
+background:#020617;
+padding:20px;
+border-radius:18px;
+margin-bottom:20px;
+box-shadow:0 15px 40px rgba(0,0,0,0.6);
+color:white;
+">
+<h4>🏢 {row['company_name']}</h4>
+<p>📍 {row['location']}</p>
+<p>🎯 <b>Role:</b> {role}</p>
+
+<b>Skill Match</b>
+<div style="background:#1e293b;border-radius:10px;">
+  <div style="
+    width:{match}%;
+    background:#22c55e;
+    padding:6px;
+    border-radius:10px;
+    text-align:right;
+    color:black;
+  ">{match}%</div>
+</div>
+
+<p style="margin-top:10px;"><b>Required Skills</b></p>
+<ul>
+{''.join(
+    f"<li>{'✔️' if s in user_skills else '❌'} {s}</li>"
+    for s in req
+)}
+</ul>
+
+<p style="color:#fca5a5;">
+Improve ❌ marked skills to unlock better companies.
+</p>
+</div>
+""", height=420)
